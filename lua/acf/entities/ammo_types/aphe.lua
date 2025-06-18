@@ -9,7 +9,6 @@ function Ammo:OnLoaded()
 	Ammo.BaseClass.OnLoaded(self)
 
 	self.Name		 = "Armor Piercing High Explosive"
-	self.Model		 = "models/munitions/round_100mm_ap_shot.mdl"
 	self.Description = "#acf.descs.ammo.aphe"
 	self.Blacklist = {
 		GL = true,
@@ -43,6 +42,12 @@ end
 
 function Ammo:UpdateRoundData(ToolData, Data, GUIData)
 	GUIData = GUIData or Data
+
+	---set the model preivew
+	local ShellData = ACF.GetShellModel(self.ID, ToolData)
+
+	self.Model     = ShellData.ModelPath
+	self.BodyGroup = ShellData.ModelBodyGroup
 
 	ACF.UpdateRoundSpecs(ToolData, Data, GUIData)
 

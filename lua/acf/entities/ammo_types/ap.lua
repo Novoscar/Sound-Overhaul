@@ -6,7 +6,6 @@ local Ammo      = AmmoTypes.Register("AP")
 
 function Ammo:OnLoaded()
 	self.Name		 = "Armor Piercing"
-	self.Model		 = "models/munitions/round_100mm_ap_shot.mdl"
 	self.Description = "#acf.descs.ammo.ap"
 	self.Blacklist = {
 		GL = true,
@@ -35,6 +34,12 @@ end
 function Ammo:UpdateRoundData(ToolData, Data, GUIData)
 	GUIData = GUIData or Data
 
+	---set the model preivew
+	local ShellData = ACF.GetShellModel(self.ID, ToolData)
+
+	self.Model     = ShellData.ModelPath
+	self.BodyGroup = ShellData.ModelBodyGroup
+	
 	ACF.UpdateRoundSpecs(ToolData, Data, GUIData)
 
 	Data.ProjMass   = Data.ProjArea * Data.ProjLength * ACF.SteelDensity --Volume of the projectile as a cylinder * density of steel
@@ -199,6 +204,7 @@ else
 
 	function Ammo:OnCreateAmmoPreview(_, Setup)
 		Setup.Model = self.Model
+		Setup.BodyGroup = self.BodyGroup
 		Setup.FOV   = 60
 	end
 

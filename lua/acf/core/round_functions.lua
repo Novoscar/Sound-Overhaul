@@ -97,6 +97,51 @@ function ACF.UpdateRoundSpecs(ToolData, Data, GUIData)
 	GUIData.ProjVolume = ProjVolume
 end
 
+	--- Returns a table of shell infomation, depending on the AmmoType specified and what weapon is being used.
+	--- @param AmmoType string Register for the type of Ammo being used (e.g. AP, HE)
+	--- @param ToolData table A table containing the copy of the local player's data variables.
+function ACF.GetShellModel(AmmoType, ToolData)
+	local ShellData = {
+		ModelPath = "models/maxofs2d/balloon_gman.mdl",
+		ModelBodyGroup = {[0] = 0}
+	}
+
+	local ShellTable = {
+		["AP"]     = "",
+		["APCR"]   = "",
+		["APDS"]   = "",
+		["APFSDS"] = "",
+		["APHE"]   = "",
+		["FL"]     = "",
+		["HE"]     = "",
+		["HEAT"]   = "",
+		["HEATFS"] = "",
+		["HP"]     = "",
+		["SM"]     = "",
+		---acf3 missiles
+		["FLR"]    = "",
+		["GLATGM"] = ""
+	}
+
+	local WeaponTable = {
+		["GL"] = {[0]=0},
+		["MG"] = {[0]=0},
+		["MO"] = {[1]=1},
+		["SL"] = {[0]=0}
+	}
+
+	if ShellTable[AmmoType] and ShellTable[AmmoType] != "" then
+		ShellData.ModelPath = ShellTable[AmmoType]
+	end
+
+	---sets bodygroup on the shells depending on what weapon is selected
+	if ToolData and WeaponTable[ToolData.Weapon] then
+		ShellData.ModelBodyGroup = WeaponTable[ToolData.Weapon]
+	end
+
+	return ShellData
+end
+
 -- Using Simplified Garzke and Dulin Empirical Formula
 -- See: http://www.navweaps.com/index_tech/tech-109.pdf
 -- Speed in m/s, Mass in kg, Caliber in mm

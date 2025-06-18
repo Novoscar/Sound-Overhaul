@@ -71,7 +71,7 @@ local function AddPreview(Base, ToolData)
 
 	hook.Run("ACF_OnCreateAmmoPreview", Preview, Setup, ToolData, Ammo, BulletData)
 
-	Preview:UpdateModel(Setup.Model)
+	Preview:UpdateModel(Setup.Model, false, Setup.BodyGroup)
 	Preview:UpdateSettings(Setup)
 end
 

@@ -8,7 +8,6 @@ function Ammo:OnLoaded()
 	Ammo.BaseClass.OnLoaded(self)
 
 	self.Name		 = "Hollow Point"
-	self.Model		 = "models/munitions/round_100mm_shot.mdl"
 	self.Description = "#acf.descs.ammo.hp"
 	self.Blacklist = ACF.GetWeaponBlacklist({
 		MG = true,
@@ -28,6 +27,12 @@ end
 
 function Ammo:UpdateRoundData(ToolData, Data, GUIData)
 	GUIData = GUIData or Data
+
+	---set the model preivew
+	local ShellData = ACF.GetShellModel(self.ID, ToolData)
+
+	self.Model     = ShellData.ModelPath
+	self.BodyGroup = ShellData.ModelBodyGroup
 
 	ACF.UpdateRoundSpecs(ToolData, Data, GUIData)
 

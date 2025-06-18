@@ -736,7 +736,7 @@ function PANEL:AddModelPreview(Model, Rotate)
 		self.NotDrawn = not Bool
 	end
 
-	function Panel:UpdateModel(Path, Material)
+	function Panel:UpdateModel(Path, Material, BodyGroup)
 		if not isstring(Path) then
 			return self:DrawEntity(false)
 		end
@@ -785,6 +785,14 @@ function PANEL:AddModelPreview(Model, Rotate)
 			local Entity = self:GetEntity()
 
 			Entity:SetMaterial(Material)
+		end
+
+		if BodyGroup then
+			local Entity = self:GetEntity()
+
+			for BodyGroupID,SubModelID in pairs(BodyGroup) do
+				Entity:SetBodygroup(BodyGroupID,SubModelID)
+			end
 		end
 	end
 

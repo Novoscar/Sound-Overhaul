@@ -7,8 +7,6 @@ local Clock     = ACF.Utilities.Clock
 function EFFECT:Init(Data)
 	self.Index = Data:GetDamageType()
 
-	self:SetModel("models/munitions/round_100mm_shot.mdl")
-
 	if not self.Index then
 		self.Kill = true
 
@@ -80,9 +78,12 @@ function EFFECT:Init(Data)
 
 		--Add all that data to the bullet table, overwriting if needed
 		Bullets[self.Index] = BulletData
+		
+		local ShellData = ACF.GetShellModel(BulletData.AmmoType)
 
 		self:SetPos(Origin)
 		self:SetAngles(Flight:Angle())
+		self:SetModel(ShellData.ModelPath)
 		self:SetModelScale(BulletData.Caliber * 0.1, 0)
 
 		self.DrawEffect = CanDraw

@@ -22,6 +22,12 @@ end
 function Ammo:UpdateRoundData(ToolData, Data, GUIData)
 	GUIData = GUIData or Data
 
+	---set the model preivew
+	local ShellData = ACF.GetShellModel(self.ID, ToolData)
+
+	self.Model     = ShellData.ModelPath
+	self.BodyGroup = ShellData.ModelBodyGroup
+
 	ACF.UpdateRoundSpecs(ToolData, Data, GUIData)
 
 	local CapLength       = GUIData.MinProjLength * 0.5
