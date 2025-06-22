@@ -45,10 +45,10 @@ function Ammo:UpdateRoundData(ToolData, Data, GUIData)
 	GUIData = GUIData or Data
 
 	---set the model preivew
-	local ShellData = ACF.GetShellModel(self.ID, ToolData)
+	local ShellData = ACF.GetShellModel(self.ID, ToolData.Weapon)
 
 	self.Model     = ShellData.ModelPath
-	self.BodyGroup = ShellData.ModelBodyGroup
+	self.BodyGroup = ShellData.BodyGroup
 
 	ACF.UpdateRoundSpecs(ToolData, Data, GUIData)
 

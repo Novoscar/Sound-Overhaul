@@ -35,10 +35,10 @@ function Ammo:UpdateRoundData(ToolData, Data, GUIData)
 	GUIData = GUIData or Data
 
 	---set the model preivew
-	local ShellData = ACF.GetShellModel(self.ID, ToolData)
+	local ShellData = ACF.GetShellModel(self.ID, ToolData.Weapon)
 
 	self.Model     = ShellData.ModelPath
-	self.BodyGroup = ShellData.ModelBodyGroup
+	self.BodyGroup = ShellData.BodyGroup
 	
 	ACF.UpdateRoundSpecs(ToolData, Data, GUIData)
 
@@ -115,7 +115,9 @@ if SERVER then
 	end
 
 	function Ammo:Network(Entity, BulletData)
+		print(BulletData.Id)
 		Entity:SetNW2String("AmmoType", "AP")
+		Entity:SetNW2String("ID", BulletData.Id)
 		Entity:SetNW2Float("Caliber", BulletData.Caliber)
 		Entity:SetNW2Float("ProjMass", BulletData.ProjMass)
 		Entity:SetNW2Float("PropMass", BulletData.PropMass)
@@ -205,7 +207,7 @@ else
 	function Ammo:OnCreateAmmoPreview(_, Setup)
 		Setup.Model = self.Model
 		Setup.BodyGroup = self.BodyGroup
-		Setup.FOV   = 60
+		Setup.FOV   = 70
 	end
 
 	function Ammo:ImpactEffect(_, Bullet)

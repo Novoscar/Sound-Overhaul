@@ -1,8 +1,8 @@
-
 local ACF       = ACF
 local AmmoTypes = ACF.Classes.AmmoTypes
 local Bullets   = ACF.BulletEffect
 local Clock     = ACF.Utilities.Clock
+local Effects   = ACF.Utilities.Effects
 
 function EFFECT:Init(Data)
 	self.Index = Data:GetDamageType()
@@ -69,22 +69,42 @@ function EFFECT:Init(Data)
 			WPMass     = Crate:GetNW2Float("WPMass"),
 			DragCoef   = Crate:GetNW2Float("DragCoef", 1),
 			AmmoType   = Crate:GetNW2String("AmmoType", "AP"),
+			WeaponType = Crate:GetNW2String("ID", "C"),
 			Tracer     = Tracer and ParticleEmitter(Origin) or nil,
 			Color      = Tracer and Crate:GetColor() or nil,
 			Accel      = Crate:GetNW2Vector("Accel", ACF.Gravity),
 			LastThink  = Clock.CurTime,
 			Effect     = self,
 		}
-
+		
 		--Add all that data to the bullet table, overwriting if needed
 		Bullets[self.Index] = BulletData
+		local ShellData = ACF.GetShellModel(BulletData.AmmoType, BulletData.WeaponType)
 		
-		local ShellData = ACF.GetShellModel(BulletData.AmmoType)
-
+		self:SetModel(ShellData.ModelPath)
 		self:SetPos(Origin)
 		self:SetAngles(Flight:Angle())
-		self:SetModel(ShellData.ModelPath)
 		self:SetModelScale(BulletData.Caliber * 0.1, 0)
+
+		for BodyGroupID,SubModelID in pairs(ShellData.BodyGroup) do
+			self:SetBodygroup(BodyGroupID,SubModelID)
+		end
+
+		if (BulletData.AmmoType == "APFSDS" or BulletData.AmmoType == "APDS") then
+			for i=1, 3 do
+
+				local EffectTable = {
+					Attachment = i,
+					Flags      = BulletData.AmmoType == "APFSDS" and 1 or 0,
+					Origin     = Origin,
+					Start      = Flight,
+					Scale      = BulletData.Caliber
+				}
+
+				Effects.CreateEffect("ACF_Sabot_Petal", EffectTable)
+			end
+
+		end
 
 		self.DrawEffect = CanDraw
 

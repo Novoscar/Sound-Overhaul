@@ -98,36 +98,36 @@ function ACF.UpdateRoundSpecs(ToolData, Data, GUIData)
 end
 
 	--- Returns a table of shell infomation, depending on the AmmoType specified and what weapon is being used.
-	--- @param AmmoType string Register for the type of Ammo being used (e.g. AP, HE)
-	--- @param ToolData table A table containing the copy of the local player's data variables.
-function ACF.GetShellModel(AmmoType, ToolData)
+	--- @param AmmoType string Register for the type of ammo being used (e.g. AP, HE)
+	--- @param WeaponType string Register for the type of weapon being used (e.g. C, MO) 
+function ACF.GetShellModel(AmmoType, WeaponType)
 	local ShellData = {
 		ModelPath = "models/maxofs2d/balloon_gman.mdl",
-		ModelBodyGroup = {[0] = 0}
+		BodyGroup = {[0] = 0}
 	}
 
 	local ShellTable = {
-		["AP"]     = "",
-		["APCR"]   = "",
-		["APDS"]   = "",
-		["APFSDS"] = "",
-		["APHE"]   = "",
-		["FL"]     = "",
-		["HE"]     = "",
-		["HEAT"]   = "",
-		["HEATFS"] = "",
-		["HP"]     = "",
-		["SM"]     = "",
+		["AP"]     = "models/acf/core/munitions/ap.mdl",
+		["APCR"]   = "models/acf/core/munitions/apcr.mdl",
+		["APDS"]   = "models/acf/core/munitions/apds.mdl",
+		["APFSDS"] = "models/acf/core/munitions/apfsds.mdl",
+		["APHE"]   = "models/acf/core/munitions/aphe.mdl",
+		["FL"]     = "models/acf/core/munitions/fl.mdl",
+		["HE"]     = "models/acf/core/munitions/he.mdl",
+		["HEAT"]   = "models/acf/core/munitions/heat.mdl",
+		["HEATFS"] = "models/acf/core/munitions/heatfs.mdl",
+		["HP"]     = "models/acf/core/munitions/hp.mdl",
+		["SM"]     = "models/acf/core/munitions/sm.mdl",
 		---acf3 missiles
 		["FLR"]    = "",
 		["GLATGM"] = ""
 	}
 
 	local WeaponTable = {
-		["GL"] = {[0]=0},
-		["MG"] = {[0]=0},
-		["MO"] = {[1]=1},
-		["SL"] = {[0]=0}
+		["GL"] = {[2]=2, [3]=1}, --disable shell body, enable alt model.
+		["MG"] = {[2]=2, [3]=1}, 
+		["MO"] = {[2]=1},        --swap tail for mortar fins
+		["SL"] = {[2]=2, [3]=1}
 	}
 
 	if ShellTable[AmmoType] and ShellTable[AmmoType] != "" then
@@ -135,8 +135,8 @@ function ACF.GetShellModel(AmmoType, ToolData)
 	end
 
 	---sets bodygroup on the shells depending on what weapon is selected
-	if ToolData and WeaponTable[ToolData.Weapon] then
-		ShellData.ModelBodyGroup = WeaponTable[ToolData.Weapon]
+	if WeaponType and WeaponTable[WeaponType] then
+		ShellData.BodyGroup = WeaponTable[WeaponType]
 	end
 
 	return ShellData
