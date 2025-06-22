@@ -107,17 +107,17 @@ function ACF.GetShellModel(AmmoType, WeaponType)
 	}
 
 	local ShellTable = {
-		["AP"]     = "models/acf/core/munitions/ap.mdl",
-		["APCR"]   = "models/acf/core/munitions/apcr.mdl",
-		["APDS"]   = "models/acf/core/munitions/apds.mdl",
-		["APFSDS"] = "models/acf/core/munitions/apfsds.mdl",
-		["APHE"]   = "models/acf/core/munitions/aphe.mdl",
-		["FL"]     = "models/acf/core/munitions/fl.mdl",
-		["HE"]     = "models/acf/core/munitions/he.mdl",
-		["HEAT"]   = "models/acf/core/munitions/heat.mdl",
-		["HEATFS"] = "models/acf/core/munitions/heatfs.mdl",
-		["HP"]     = "models/acf/core/munitions/hp.mdl",
-		["SM"]     = "models/acf/core/munitions/sm.mdl",
+		["AP"]     = "models/acf/munitions/ap.mdl",
+		["APCR"]   = "models/acf/munitions/apcr.mdl",
+		["APDS"]   = "models/acf/munitions/apds.mdl",
+		["APFSDS"] = "models/acf/munitions/apfsds.mdl",
+		["APHE"]   = "models/acf/munitions/aphe.mdl",
+		["FL"]     = "models/acf/munitions/fl.mdl",
+		["HE"]     = "models/acf/munitions/he.mdl",
+		["HEAT"]   = "models/acf/munitions/heat.mdl",
+		["HEATFS"] = "models/acf/munitions/heatfs.mdl",
+		["HP"]     = "models/acf/munitions/hp.mdl",
+		["SM"]     = "models/acf/munitions/sm.mdl",
 		---acf3 missiles
 		["FLR"]    = "",
 		["GLATGM"] = ""
