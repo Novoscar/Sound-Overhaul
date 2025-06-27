@@ -1061,6 +1061,8 @@ do -- Reload related
 	--- @param BulletData table Bullet data
 	--- @param Override table Override data, either from an entity or a table
 	function ACF.CalcReloadTime(Caliber, Class, Weapon, BulletData, Override)
+		if BulletData.Type == "Refill" then return 1, false end -- None of the later calculations make sense if this is a refill
+
 		-- If the weapon has a cyclic rate, use it, otherwise calculate the reload time based on the bullet data
 		local Cyclic = Override and Override.Cyclic or ACF.GetWeaponValue("Cyclic", Caliber, Class, Weapon)
 		if Cyclic then return 60 / Cyclic, false end
@@ -1080,6 +1082,8 @@ do -- Reload related
 	--- @param BulletData table Bullet data
 	--- @param Override table Override data, either from an entity or a table
 	function ACF.CalcReloadTimeMag(Caliber, Class, Weapon, BulletData, Override)
+		if BulletData.Type == "Refill" then return 1, false end -- None of the later calculations make sense if this is a refill
+
 		-- Use the override if possible
 		local MagSizeOverride = Override and Override.MagSize
 
@@ -1117,7 +1121,7 @@ do -- Reload related
 	function ACF.GenerateLuaSeat(Entity, Player, Pos, Angle, Model)
 		if not Player:CheckLimit("vehicles") then return end
 
-		print("GenerateLuaSeat", Entity, Player, Pos, Angle, Model)
+		-- print("GenerateLuaSeat", Entity, Player, Pos, Angle, Model)
 		local Pod = ents.Create("prop_vehicle_prisoner_pod")
 		Player:AddCount("vehicles", Pod)
 		if IsValid(Pod) and IsValid(Player) then
@@ -1149,27 +1153,29 @@ do -- Reload related
 		end
 	end
 
-	if WireLib then
-		if not ACF.WirelibDetour_GetClosestRealVehicle then
-			ACF.WirelibDetour_GetClosestRealVehicle = WireLib.GetClosestRealVehicle
-		end
-		local ACF_WirelibDetour_GetClosestRealVehicle = ACF.WirelibDetour_GetClosestRealVehicle
-		function WireLib.GetClosestRealVehicle(Vehicle, Position, Notify)
-			if IsValid(Vehicle) and Vehicle.ACF and Vehicle.ACF_GetSeatProxy then
-				local Pod = Vehicle:ACF_GetSeatProxy()
-				if IsValid(Pod) then return Pod end
+	timer.Simple(1, function()
+		if WireLib then
+			if not ACF.WirelibDetour_GetClosestRealVehicle then
+				ACF.WirelibDetour_GetClosestRealVehicle = WireLib.GetClosestRealVehicle
 			end
+			local ACF_WirelibDetour_GetClosestRealVehicle = ACF.WirelibDetour_GetClosestRealVehicle
+			function WireLib.GetClosestRealVehicle(Vehicle, Position, Notify)
+				if IsValid(Vehicle) and Vehicle.ACF and Vehicle.ACF_GetSeatProxy then
+					local Pod = Vehicle:ACF_GetSeatProxy()
+					if IsValid(Pod) then return Pod end
+				end
 
-			return ACF_WirelibDetour_GetClosestRealVehicle(Vehicle, Position, Notify)
+				return ACF_WirelibDetour_GetClosestRealVehicle(Vehicle, Position, Notify)
+			end
 		end
-	end
+	end)
 
 	--- Configures a lua seat after it has been created.
 	--- Whenever the seat is created, this should be called after.
 	--- @param Pod any The seat to configure
 	--- @param Player any The owner of the seat
 	function ACF.ConfigureLuaSeat(Entity, Pod, Player)
-		print("ConfigureLuaSeat", Entity, Pod, Player)
+		-- print("ConfigureLuaSeat", Entity, Pod, Player)
 		-- Just to be safe...
 		Pod.Owner = Player
 		Pod:CPPISetOwner(Player)
@@ -1184,15 +1190,12 @@ do -- Reload related
 		if not IsValid(Pod) then return end
 
 		Pod:SetNoDraw(true)
-
-		-- hopefully, this concoction the pod super-not-solid without calling Pod:SetSolid at all
 		Pod:SetNotSolid(true)
-		Pod:SetCollisionGroup(COLLISION_GROUP_IN_VEHICLE)
-		local Count = Pod:GetPhysicsObjectCount()
-		for Idx = 0, Count - 1 do
-			local Phys = Pod:GetPhysicsObjectNum(Idx)
-			Phys:SetContents(CONTENTS_EMPTY)
-		end
+		-- MARCH: In Advanced Duplicator 2, pasting runs v.PostEntityPaste (if it exists), and then afterwards will call
+		-- v:SetNotSolid(v.SolidMod). For whatever reason, that is false when the seat gets duped. So this just tricks
+		-- the duplicator to make it not-solid. source: advdupe2/lua/advdupe2/sv_clipboard.lua
+		Pod.SolidMod = true
+
 		Pod.ACF_InvisibleToBallistics = true
 		Pod.ACF_InvisibleToTrace = true
 	end

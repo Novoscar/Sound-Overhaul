@@ -303,6 +303,14 @@ function PANEL:AddCollapsible(Text, State, Icon)
 	Category:DoExpansion(State)
 	Category:SetContents(Base)
 
+	function Category:Paint(w, h)
+		local Skin = self:GetSkin()
+		local OldHeight = self:GetHeaderHeight()
+		self:SetHeaderHeight(OldHeight + 1)
+		Skin:PaintCollapsibleCategory(self, w, h)
+		self:SetHeaderHeight(OldHeight)
+	end
+
 	function Category:AnimSlide(_, Delta, Data)
 		self:InvalidateLayout()
 		self:InvalidateParent()

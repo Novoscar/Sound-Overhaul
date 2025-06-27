@@ -47,7 +47,6 @@ local function ConfigureLuaSeat(Entity, Pod, Player)
 	ACF.ConfigureLuaSeat(Entity, Pod, Player)
 	Entity:ACF_SetUserVar("AlreadyHasSeat", true)
 
-	Entity:SetUseType(SIMPLE_USE)
 	Entity.Pod = Pod
 
 	hook.Add("PlayerEnteredVehicle", "ACFBaseplateSeatEnter" .. Entity:EntIndex(), function(Ply, Veh)
@@ -67,7 +66,7 @@ local function ConfigureLuaSeat(Entity, Pod, Player)
 
 	-- Allow players to enter the seat externally by pressing use on a prop on the same contraption as the baseplate
 	hook.Add("PlayerUse", "ACFBaseplateSeatEnterExternal" .. Entity:EntIndex(), function(Ply, Ent)
-		if not Ply:KeyDown(IN_SPEED) then return end
+		if not Ply:KeyDown(IN_WALK) then return end
 		if IsValid(Ent) then
 			local Contraption = Ent:GetContraption()
 			if Contraption then
@@ -128,7 +127,7 @@ end
 -- frankly, should rename Pod entirely
 function ENT:ACF_GetSeatProxy() return self.Pod end
 
-function ENT:ACF_PostSpawn(_, _, _, ClientData)
+function ENT:ACF_PostSpawn(Owner, _, _, ClientData)
 	local EntMods = ClientData.EntityMods
 	if EntMods and EntMods.mass then
 		ACF.Contraption.SetMass(self, self.ACF.Mass or 1)
@@ -141,7 +140,6 @@ function ENT:ACF_PostSpawn(_, _, _, ClientData)
 	WireLib.TriggerOutput(self, "Entity", self)
 
 	-- Add seat support for baseplates
-	local Owner = self:CPPIGetOwner()
 	if not self:ACF_GetUserVar "AlreadyHasSeat" then
 		local Pod = ACF.GenerateLuaSeat(self, Owner, self:GetPos(), self:GetAngles(), self:GetModel(), true)
 		if IsValid(Pod) then
@@ -175,11 +173,6 @@ function ENT:PostEntityPaste(_, _, CreatedEntities)
 		end
 		ConfigureLuaSeat(self, self.Pod, self:CPPIGetOwner())
 	end
-end
-
-function ENT:Use(Activator)
-	if not IsValid(Activator) then return end
-	Activator:EnterVehicle(self.Pod)
 end
 
 do
