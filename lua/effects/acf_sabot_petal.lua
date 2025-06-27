@@ -17,7 +17,7 @@ function EFFECT:Init(Data)
 
 	--ammotype is APFSDS
 	if (BulletType == 1) then
-		self:SetModel("models/acf/core/munitions/apfsdssabot.mdl")
+		self:SetModel("models/acf/munitions/apfsdssabot.mdl")
 		self:SetAngles(Forward + Angle(0,0,120*Index))
 		SabotPetalTable = {
 			[1] = {Velocity = Vector(1, -Seperation, Seperation), Torque = Vector(math.random(0,0.2), -1, math.random(0,0.2))}, --top left
@@ -26,7 +26,7 @@ function EFFECT:Init(Data)
 		}
 	--ammotype is APDS
 	else
-		self:SetModel("models/acf/core/munitions/apdssabot.mdl")
+		self:SetModel("models/acf/munitions/apdssabot.mdl")
 		self:SetAngles(Forward)
 		self:SetBodygroup(1, Index-1)
 		SabotPetalTable = {
